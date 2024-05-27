@@ -1,8 +1,12 @@
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
+apiVersion: v1
+kind: PersistentVolume
 metadata:
-  name: gcp-storage-class
-provisioner: kubernetes.io/gce-pd
-reclaimPolicy: Retain   # Retain or Delete
-#volumeBindingMode: Immediate   # WaitForFirstConsumer or Immediate
-#allowVolumeExpansion: true    # true or false
+  name: persistent-volume
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/disks
+  persistentVolumeReclaimPolicy: Retain

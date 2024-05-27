@@ -1,9 +1,23 @@
-spring:
-  application:
-     name: nvsis
 server:
   port: 8000
 message: ${nvsis-config.nvsis.msg}
 title: ${nvsis-config.nvsis.title}
 password: ${nvsis-secrets-config.nvsis.password}
+
+spring:
+  application:
+    name: book-service
+  datasource:
+    url: ${nvsis-secrets-config.nvsis.db-url}
+    username: ${nvsis-secrets-config.nvsis.db-username}
+    password: ${nvsis-secrets-config.nvsis.db-password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+      ddl-auto: update
+      properties:
+      hibernate:
+        default_schema: postgres_db
+
 
