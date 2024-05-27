@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kiran-nagp-ns
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gcp-storage-class
+  namespace: kiran-nagp-ns
+provisioner: kubernetes.io/gce-pd
+reclaimPolicy: Retain   # Retain or Delete
+volumeBindingMode: WaitForFirstConsumer   # WaitForFirstConsumer or Immediate
+#allowVolumeExpansion: true    # true or false
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gcp-disk-pvc
+  namespace: kiran-nagp-ns
+spec:
+  accessModes:
+    - ReadWriteOnce   # ReadWriteOnce, ReadOnlyMany or ReadWriteMany
+  storageClassName: gcp-storage-class
+  resources:
+    requests:
+      storage: 4Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  namespace: kiran-nagp-ns
+  labels:
+    app: postgres
+data:
+  POSTGRES_DB: postgres_db
+  PGDATA: /var/lib/postgresql/data/pgdata
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret-config
+  namespace: kiran-nagp-ns
+  labels:
+    app: postgres
+data:
+  #U$erN@me
+  POSTGRES_USER: VSRlck5AbWU=
+  #P@ssw0rd
+  POSTGRES_PASSWORD: UEBzc3cwcmQ=
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: kiran-nagp-ns
+spec:
+  serviceName: postgres
+  selector:
+    matchLabels:
+      app: postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:14
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: postgres-config
+            - secretRef:
+                name: postgres-secret-config
+          volumeMounts:
+            - name: gcp-disk-pvc
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: gcp-disk-pvc
+          persistentVolumeClaim:
+            claimName: gcp-disk-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: kiran-nagp-ns
+  labels:
+    app: postgres
+spec:
+  type: LoadBalancer
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      name: https
+      port: 5432
+      targetPort: 5432

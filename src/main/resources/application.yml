@@ -1,0 +1,9 @@
+spring:
+  application:
+     name: nvsis
+server:
+  port: 8000
+message: ${nvsis-config.nvsis.msg}
+title: ${nvsis-config.nvsis.title}
+password: ${nvsis-secrets-config.nvsis.password}
+

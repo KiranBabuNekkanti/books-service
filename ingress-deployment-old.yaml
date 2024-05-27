@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-rest-hw-old
+  labels:
+    app: java-hw
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: java-hw
+  template:
+    metadata:
+      labels:
+        app: java-hw
+    spec:
+      containers:
+        - name: java-hw
+          image: kiranbabun/java-hello-world-image:1
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: nvsis-config
+            - secretRef:
+                name: nvsis-secrets-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: java-hw-np-old
+spec:
+  type: NodePort
+  ports:
+    - targetPort: 8000
+      port: 8000
+      nodePort: 30070
+      protocol: TCP
+  selector:
+    app: java-hw
+

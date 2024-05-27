@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-rest-nvsis
+  labels:
+    app: java-hw
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: java-hw
+  template:
+    metadata:
+      labels:
+        app: java-hw
+    spec:
+      containers:
+        - name: java-hw
+          image: kiranbabun/java-rest-nvsis-image:1
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: nvsis-config
+            - secretRef:
+                name: nvsis-secrets-config
+
