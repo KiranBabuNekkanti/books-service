@@ -9,44 +9,20 @@ metadata:
   name: gcp-storage-class
 provisioner: kubernetes.io/gce-pd
 reclaimPolicy: Retain   # Retain or Delete
-volumeBindingMode: WaitForFirstConsumer   # WaitForFirstConsumer or Immediate
 #allowVolumeExpansion: true    # true or false
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: gcp-disk-pvc
+  namespace: kiran-nagp-ns
 spec:
   accessModes:
-    - ReadWriteOnce   # ReadWriteOnce, ReadOnlyMany or ReadWriteMany
-  storageClassName: filestore-example
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 4Gi
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: postgres-config
-  namespace: kiran-nagp-ns
-  labels:
-    app: postgres
-data:
-  POSTGRES_DB: postgres_db
-  PGDATA: /var/lib/postgresql/data/pgdata
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: postgres-secret-config
-  namespace: kiran-nagp-ns
-  labels:
-    app: postgres
-data:
-  #U$erN@me
-  POSTGRES_USER: VSRlck5AbWU=
-  #P@ssw0rd
-  POSTGRES_PASSWORD: UEBzc3cwcmQ=
+      storage: 10Gi
+  storageClassName: gcp-storage-class
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -72,9 +48,9 @@ spec:
             - containerPort: 5432
           envFrom:
             - configMapRef:
-                name: postgres-config
+                name: books-service-config
             - secretRef:
-                name: postgres-secret-config
+                name: books-service-secret-config
           volumeMounts:
             - name: gcp-disk-pvc
               mountPath: /var/lib/postgresql/data
@@ -86,12 +62,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres
+  name: postgres-db-headless
   namespace: kiran-nagp-ns
   labels:
     app: postgres
 spec:
-  type: LoadBalancer
+  clusterIP: None
   selector:
     app: postgres
   ports:

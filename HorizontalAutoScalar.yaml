@@ -1,13 +1,13 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: java-rest-nvsis-hpa
+  name: books-service-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: java-rest-nvsis
-  minReplicas: 1
+    name: books-service
+  minReplicas: 3
   maxReplicas: 5
   metrics:
   - type: Resource

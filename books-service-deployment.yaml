@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: books-service-api
+  namespace: kiran-nagp-ns
+  labels:
+    app: books-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: books-service
+  template:
+    metadata:
+      labels:
+        app: books-service
+    spec:
+      containers:
+        - name: books-service
+          image: kiranbabun/books-service:1
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: books-service-config
+            - secretRef:
+                name: books-service-secret-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: books-service
+  namespace: kiran-nagp-ns
+spec:
+  ports:
+    - port: 8000
+      targetPort: 8000
+  type: LoadBalancer
+  selector:
+    app: books-service
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: books-service-hpa
+  namespace: kiran-nagp-ns
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: books-service-api
+  minReplicas: 3
+  maxReplicas: 6
+  metrics:
+    - type: Resource
+      resource:
+        name: CPU
+        target:
+          type: Utilization
+          averageUtilization: 2
+  behavior:
+    scaleDown:
+      policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 1
+      stabilizationWindowSeconds: 5
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: basic-ingress-service
+  namespace: kiran-nagp-ns
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /v1/books-service
+            pathType: Prefix
+            backend:
+              service:
+                name: books-service
+                port:
+                  number: 8000
+
+
+

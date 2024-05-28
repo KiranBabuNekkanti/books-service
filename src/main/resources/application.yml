@@ -1,16 +1,16 @@
 server:
   port: 8000
-message: ${nvsis-config.nvsis.msg}
-title: ${nvsis-config.nvsis.title}
-password: ${nvsis-secrets-config.nvsis.password}
+message: ${books-service-config.msg}
+title: ${books-service-config.title}
+password: ${books-service-config.password}
 
 spring:
   application:
     name: book-service
   datasource:
-    url: ${nvsis-secrets-config.nvsis.db-url}
-    username: ${nvsis-secrets-config.nvsis.db-username}
-    password: ${nvsis-secrets-config.nvsis.db-password}
+    url: ${books-service-config.db-url}
+    username: ${books-service-secret-config.db-username}
+    password: ${books-service-secret-config.db-password}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
