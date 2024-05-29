@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: books-service
-          image: kiranbabun/books-service:1
+          image: kiranbabun/books-service:latest
           ports:
             - containerPort: 8000
           envFrom:
