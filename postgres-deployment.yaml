@@ -25,7 +25,7 @@ metadata:
   name: postgres
   namespace: kiran-nagp-ns
 spec:
-  serviceName: postgres
+  serviceName: postgres-db-headless
   selector:
     matchLabels:
       app: postgres
