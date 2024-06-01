@@ -3,7 +3,7 @@ package com.api.books.controller;
 import com.api.books.dto.Book;
 import com.api.books.service.BookService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,15 +17,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class BooksController {
-
-    @Value("${message}")
-    private String message;
-
-    @Value("${title}")
-    private String title;
-
-    @Value("${password}")
-    private String password;
 
     private final BookService bookService;
 
