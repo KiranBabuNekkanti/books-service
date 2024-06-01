@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: nvsis-config
-  labels:
-    name: nvsis-config
-data:
-  nvsis-config.nvsis.msg: Welcome, Hello World
-  nvsis-config.nvsis.title: Java Rest App

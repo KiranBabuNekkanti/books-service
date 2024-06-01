@@ -25,6 +25,13 @@ spec:
                 name: books-service-config
             - secretRef:
                 name: books-service-secret-config
+          resources:
+            requests:
+              cpu: "100m" #0.1 CPU Core
+              memory: "256Mi"
+            limits:
+              cpu: "500m" #0.5 CPU Core
+              memory: "512Mi"
 ---
 apiVersion: v1
 kind: Service
@@ -63,8 +70,8 @@ spec:
       policies:
         - type: Pods
           value: 1
-          periodSeconds: 1
-      stabilizationWindowSeconds: 5
+          periodSeconds: 2
+      stabilizationWindowSeconds: 10
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -72,13 +79,14 @@ metadata:
   name: basic-ingress-service
   namespace: kiran-nagp-ns
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
+  ingressClassName: nginx
   rules:
     - http:
         paths:
-          - path: /v1/books-service
-            pathType: Prefix
+          - path: /v1/books-service(/|$)(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: books-service

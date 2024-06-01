@@ -27,12 +27,6 @@ public class BooksController {
 
     private final BookService bookService;
 
-    @GetMapping
-    public ResponseEntity<String> helloWorld() {
-        String value = "Title: " + title + ", Message: " + message + ", My Password is: " + password;
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(value);
-    }
-
     @PostMapping(value = "/books")
     public ResponseEntity<Book> saveBook(@RequestBody Book book){
         return ResponseEntity.status(HttpStatus.CREATED).body(bookService.saveBook(book));

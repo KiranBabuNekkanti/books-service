@@ -1,8 +1,5 @@
 server:
   port: 8000
-message: ${books-service-config.msg}
-title: ${books-service-config.title}
-password: ${books-service-config.password}
 
 spring:
   application:
@@ -18,6 +15,10 @@ spring:
       ddl-auto: update
       properties:
       hibernate:
-        default_schema: postgres_db
+        default_schema: postgres
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 
