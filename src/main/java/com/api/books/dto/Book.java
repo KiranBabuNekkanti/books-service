@@ -1,4 +1,4 @@
-package com.api.books;
+package com.api.books.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

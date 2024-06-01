@@ -1,5 +1,7 @@
-package com.api.books;
+package com.api.books.service;
 
+import com.api.books.dto.Book;
+import com.api.books.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
