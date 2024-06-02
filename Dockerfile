@@ -1,8 +1,11 @@
 # Docker Build Maven Stage
-FROM maven:3-jdk-8-alpine AS build
+FROM maven:3-openjdk-17 AS build
+# Copy folder in docker
+WORKDIR /opt/app
+COPY ./ /opt/app
 RUN mvn clean install -DskipTests
-# Docker Build and Push Image Stage
+# Run spring boot in Docker
 FROM openjdk:17
-COPY target/books-service-0.0.1-SNAPSHOT.jar books-service.jar
-ENTRYPOINT ["java","-jar","/books-service.jar"]
+COPY --from=build /opt/app/target/*.jar books-service.jar
+ENTRYPOINT ["java","-jar","books-service.jar"]
 EXPOSE 8000
