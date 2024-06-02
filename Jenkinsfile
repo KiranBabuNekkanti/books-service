@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS_ID = 'DOCKER_CREDS_ID'
+        DOCKER_CREDENTIALS_ID = 'docker_creds_id'
         KUBECONFIG = '/path/to/your/kubeconfig'
         IMAGE_NAME = 'books-service'
         REGISTRY_URL = 'https://hub.docker.com/repository/docker/kiranbabun'
